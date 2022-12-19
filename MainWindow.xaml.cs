@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,7 +25,7 @@ namespace WPF_Calculator
         {
             InitializeComponent();
 
-            foreach (UIElement el in MainRoot.Children)//перебираем все элементы среди дочерних объектов грида
+            foreach (UIElement el in MainRoot.Children)//перебираем все UI элементы среди дочерних объектов грида
             {
                 if (el is Button)//проверка на принадлежность элемента к кнопкам
                 {
@@ -39,12 +40,15 @@ namespace WPF_Calculator
             //после вызывается свойство Content и все затем приводится к строке
             string str = (string)((Button)e.OriginalSource).Content;
 
-            if (str == "AC") textLabel.Text = ""; //реализация кнопки оистки
-            else if (str == "=") { } //если передан знак равенства то выполняем математическое действие
+            if (str == "AC") textLabel.Text = ""; //реализация кнопки очистки
 
-            else textLabel.Text += str;
-
-            textLabel.Text += str; //в текст лейбла добавляем значение кнопки
+            else if (str == "=") //если передан знак равенства 
+            {  //то выполняем математическое действие(используется библиотека System.Data)
+                string value = new DataTable().Compute(textLabel.Text, null).ToString();
+                //метод Compute класса DataTable вычисляет значение текущей строки
+                textLabel.Text = value;
+            }
+            else textLabel.Text += str; //либо просто в текст лейбла добавляем значение кнопки
         }
     }
 }
